@@ -125,3 +125,4 @@ def load_config(config_path):
         config = json.load(f)
     return config
 
+

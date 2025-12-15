@@ -1,88 +1,99 @@
-# CS461 Final Project - 讽刺检测（Sarcasm Detection）
+# CS461 Final Project - 讽刺检测 (Sarcasm Detection)
 
-## 项目概述
+## 📋 项目要求
 
-本项目旨在构建一个机器学习模型来检测短文本中的讽刺意味。这是CS461课程的期末项目，要求在不使用Transformer架构的前提下，使用传统机器学习或经典神经网络方法完成二分类任务。
+训练一个分类模型检测文本中的讽刺。
 
-## 项目结构
+**限制**：❌ 不能使用 Transformer (BERT, GPT, RoBERTa等)  
+**允许**：✅ 传统ML、LSTM、CNN、集成方法
+
+**截止日期**：2025年12月17日
+
+---
+
+## 📁 当前文件
 
 ```
 CS461_FinalProject/
-├── notebooks/                     # Jupyter笔记本（数据探索、实验）
-├── src/                           # 源代码
-├── models/                        # 保存的模型
-├── results/                       # 实验结果
-├── report/                        # 报告
-├── predict_sarcasm.py             # 推理脚本（提交用）
-├── requirements.txt               # Python依赖
-└── README.md                      # 本文件
+├── train.csv              # 训练数据 (21,465条)
+├── valid.csv              # 验证数据 (717条)
+├── test.csv               # 测试数据 (967条)
+├── requirements.txt       # Python依赖
+├── predict_sarcasm.py     # 推理脚本（需完善）
+├── models/                # 保存模型的地方
+└── README.md              # 本文件
 ```
 
-详细文件结构请查看 `project_structure.md`
+---
 
-## 快速开始
+## 🚀 快速开始
 
 ### 1. 安装依赖
-
 ```bash
 pip install -r requirements.txt
+python -c "import nltk; nltk.download('stopwords'); nltk.download('wordnet'); nltk.download('punkt')"
 ```
 
-### 2. 数据探索
-
-打开并运行 `notebooks/01_data_exploration.ipynb` 来了解数据集。
-
-### 3. 训练模型
-
+### 2. 开发和训练
+建议使用 Jupyter Notebook 或 Google Colab 进行实验：
 ```bash
-python src/train.py
+jupyter notebook
 ```
 
-### 4. 进行预测
+### 3. 训练流程建议
+1. **数据探索** - 了解数据分布
+2. **基线模型** - 逻辑回归 + TF-IDF（目标：F1 > 0.70）
+3. **进阶模型** - SVM、LSTM、集成方法（目标：F1 > 0.75）
+4. **完善推理脚本** - 确保 `predict_sarcasm.py` 能运行
+5. **撰写报告** - 9个必需章节
 
+---
+
+## 📤 最终提交
+
+需要提交一个ZIP文件，包含：
+
+```
+cs-461_final_project.zip
+├── report.pdf              # 详细报告（9个章节）
+├── predict_sarcasm.py      # 推理脚本
+├── requirements.txt        # Python依赖
+└── models/
+    ├── model_weights.pkl   # 模型权重
+    └── vectorizer.pkl      # 特征提取器
+```
+
+### 推理脚本使用方法
 ```bash
 python predict_sarcasm.py --input test.csv --output predictions.csv
 ```
 
-## 项目要求
-
-### ✅ 允许使用的模型
-- 传统机器学习（逻辑回归、SVM、随机森林等）
-- 经典神经网络（MLP、CNN、RNN、LSTM、BiLSTM）
-- 预训练词嵌入（Word2Vec、GloVe）
-- 集成方法
-
-### ❌ 禁止使用的模型
-- Transformer架构（BERT、GPT、RoBERTa等）
-- 注意力机制模型
-
-## 实施步骤（14-20天）
-
-1. **数据探索** (1-2天) - 统计分析、可视化
-2. **数据预处理** (1天) - 文本清洗、规范化
-3. **特征工程** (2-3天) - TF-IDF、Word2Vec/GloVe、手工特征
-4. **模型训练** (3-4天) - 基线→进阶→集成
-5. **模型优化** (2-3天) - 超参数调优、交叉验证
-6. **评估与分析** (1-2天) - 性能评估、错误分析
-7. **报告撰写** (2-3天) - 完成9个章节
-
-## 评估指标
-
-- 准确率 (Accuracy)
-- 精确率 (Precision)
-- 召回率 (Recall)
-- F1分数 (F1-Score)
-
-## 提交要求
-
-最终ZIP文件应包含：
-1. `report.pdf` - 详细报告（9个章节）
-2. `predict_sarcasm.py` - 推理脚本
-3. `models/` - 模型权重文件
-4. `requirements.txt` - 依赖列表
-
-⚠️ **重要**: 使用相对路径，确保跨平台兼容性！
+输出格式：CSV文件，包含 `text` 和 `prediction` 两列
 
 ---
 
-**截止日期**: 2025年12月17日 23:59 ET
+## 📊 报告要求（9个章节）
+
+1. **Introduction** - 问题描述、方法概述
+2. **Data Exploration & Preprocessing** - 数据统计、预处理步骤
+3. **Feature Engineering** - TF-IDF、词嵌入等
+4. **Model Architecture & Selection** - 模型选择理由
+5. **Training Methodology** - 训练过程、优化方法
+6. **Experiments & Results** - ⚠️ 必须报告测试集的 F1/Precision/Recall/Accuracy
+7. **Discussion** - 有效方法、局限性
+8. **Conclusion** - 总结
+9. **References** - 引用资源
+
+---
+
+## 💡 提示
+
+- 从简单开始：逻辑回归 + TF-IDF是很好的基线
+- 尝试不同特征：unigram, bigram, Word2Vec
+- 考虑集成多个模型
+- 注意防止过拟合（使用验证集、正则化）
+- 所有路径使用相对路径
+
+---
+
+**评分**：报告15% + 公开测试5% + 隐藏测试10% = 30%

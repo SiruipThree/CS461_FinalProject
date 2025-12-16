@@ -1,0 +1,33 @@
+# GloVe词向量文件（太大，不提交）
+glove.6B.zip
+glove.6B.*.txt
+
+# Python缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter Notebook检查点
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# 虚拟环境
+venv/
+env/
+ENV/
+
+# IDE配置
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# 其他
+*.log
+

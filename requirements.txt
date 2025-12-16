@@ -21,16 +21,10 @@ tqdm>=4.62.0
 # Utilities
 scipy>=1.7.0
 
-# Optional: Deep Learning (uncomment if needed for LSTM/CNN)
-# tensorflow>=2.8.0
-# torch>=1.10.0
+# Deep Learning (for BiLSTM model)
+tensorflow>=2.8.0
 
-# Optional: Advanced NLP (uncomment if needed)
-# gensim>=4.1.0
-# spacy>=3.2.0
-
-# Optional: Boosting models (uncomment if needed)
-# xgboost>=1.5.0
-# lightgbm>=3.3.0
+# Boosting models (for XGBoost)
+xgboost>=1.5.0
 
 

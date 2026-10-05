@@ -1,99 +1,94 @@
-# CS461 Final Project - 讽刺检测 (Sarcasm Detection)
+# Sarcasm Detection in News Headlines
 
-## 📋 项目要求
+A machine learning project that classifies short news headlines as sarcastic or non-sarcastic. It combines word-level and character-level neural networks through a Logistic Regression stacking model, with a TF-IDF baseline for comparison.
 
-训练一个分类模型检测文本中的讽刺。
+**Portfolio author:** Sirui Peng\
+**Academic context:** Rutgers University, CS461 — Fall 2025\
+**Dataset:** 23,146 labeled headlines across training, validation, and test splits\
+**Verified saved-model performance:** **87.99% accuracy · 0.8731 F1** on the 966-row test split
 
-**限制**：❌ 不能使用 Transformer (BERT, GPT, RoBERTa等)  
-**允许**：✅ 传统ML、LSTM、CNN、集成方法
+[Technical report](CS461_Sarcasm_Detection_Report.md) · [Training notebook](SarcasmDetection.ipynb) · [Inference implementation](predict_sarcasm.py) · [Verification record](docs/verification-2026-10-04.json)
 
-**截止日期**：2025年12月17日
+## Project overview
 
----
+I implemented data exploration, text preprocessing, baseline and neural-network training, model evaluation, stacking, and a command-line inference workflow. The work covers:
 
-## 📁 当前文件
+- **Logistic Regression + TF-IDF:** a baseline using unigram and bigram features.
+- **BiLSTM:** sequence modeling with randomly initialized word embeddings.
+- **BiLSTM + GloVe:** initialization with pretrained 100-dimensional word vectors, followed by task-specific training with trainable embeddings.
+- **Character-level CNN:** convolutional features over character sequences.
+- **Stacking:** a Logistic Regression meta-learner combining the two neural models' predicted probabilities.
+- **Reusable inference:** saved weights, tokenizers, and configuration loaded by a CSV-to-CSV prediction script.
 
+## Verified results
+
+The existing saved models were run through `predict_sarcasm.py` on all 966 rows of `test.csv` on **October 4, 2026**. Metrics were recomputed from the resulting predictions and the supplied labels.
+
+| Metric | Result |
+|---|---:|
+| Accuracy | **87.99%** |
+| Precision — sarcastic class | 0.8418 |
+| Recall — sarcastic class | 0.9068 |
+| F1 — sarcastic class | **0.8731** |
+| Correct predictions | 850 / 966 |
+
+The output matched the repository's `predictions.csv`. The [verification record](docs/verification-2026-10-04.json) identifies the runtime versions, artifact hashes, and confusion matrix. The [report](CS461_Sarcasm_Detection_Report.md) also explains the historical experiment results and the supplied data splits.
+
+## Inference pipeline
+
+```mermaid
+flowchart LR
+    A[Input CSV: text] --> B[Character tokenizer: 300 positions]
+    A --> C[Word tokenizer: 100 positions]
+    B --> D[Character CNN]
+    C --> E[BiLSTM with GloVe]
+    D --> F[Two probability features]
+    E --> F
+    F --> G[Logistic Regression meta-learner]
+    G --> H[Output CSV: text and prediction]
 ```
-CS461_FinalProject/
-├── train.csv              # 训练数据 (21,465条)
-├── valid.csv              # 验证数据 (717条)
-├── test.csv               # 测试数据 (967条)
-├── requirements.txt       # Python依赖
-├── predict_sarcasm.py     # 推理脚本（需完善）
-├── models/                # 保存模型的地方
-└── README.md              # 本文件
-```
 
----
+`prediction = 1` denotes sarcasm; `prediction = 0` denotes non-sarcasm.
 
-## 🚀 快速开始
+## Run the saved model
 
-### 1. 安装依赖
+The inference workflow was verified with **Python 3.11.9**, **TensorFlow 2.20.0**, **Keras 3.12.0**, and **scikit-learn 1.8.0**. `requirements.txt` records the dependency versions used for this verification.
+
 ```bash
-pip install -r requirements.txt
-python -c "import nltk; nltk.download('stopwords'); nltk.download('wordnet'); nltk.download('punkt')"
+git clone https://github.com/SiruipThree/CS461_FinalProject.git
+cd CS461_FinalProject
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python predict_sarcasm.py --input test.csv --output /tmp/sarcasm_predictions.csv
 ```
 
-### 2. 开发和训练
-建议使用 Jupyter Notebook 或 Google Colab 进行实验：
-```bash
-jupyter notebook
-```
+An input CSV must contain a `text` column. A label column is only needed to evaluate predictions. The output contains `text` and `prediction` columns in the input row order. The script fills missing text with an empty string before tokenization.
 
-### 3. 训练流程建议
-1. **数据探索** - 了解数据分布
-2. **基线模型** - 逻辑回归 + TF-IDF（目标：F1 > 0.70）
-3. **进阶模型** - SVM、LSTM、集成方法（目标：F1 > 0.75）
-4. **完善推理脚本** - 确保 `predict_sarcasm.py` 能运行
-5. **撰写报告** - 9个必需章节
+The saved models include the learned embedding weights, so inference can run locally after dependencies and the repository have been downloaded. GloVe is required separately for retraining.
 
----
+## Training and evaluation
 
-## 📤 最终提交
+The [notebook](SarcasmDetection.ipynb) contains the development experiments: data inspection, the TF-IDF baseline, a basic BiLSTM, the GloVe model, the character CNN, and stacking. To explore or retrain them:
 
-需要提交一个ZIP文件，包含：
+1. Install the recorded dependencies and a notebook interface, such as `jupyterlab`.
+2. Obtain `glove.6B.100d.txt` from the [Stanford GloVe project](https://nlp.stanford.edu/projects/glove/) and place it in the repository root.
+3. Open `SarcasmDetection.ipynb` and inspect its training sections in order.
 
-```
-cs-461_final_project.zip
-├── report.pdf              # 详细报告（9个章节）
-├── predict_sarcasm.py      # 推理脚本
-├── requirements.txt        # Python依赖
-└── models/
-    ├── model_weights.pkl   # 模型权重
-    └── vectorizer.pkl      # 特征提取器
-```
+The base neural models use validation loss for early stopping. The stacker is trained on their validation-set probability outputs. The notebook preserves earlier experiment outputs; full retraining can produce a different checkpoint and different metrics. The saved-model command above is the verified reproduction path for the results highlighted here.
 
-### 推理脚本使用方法
-```bash
-python predict_sarcasm.py --input test.csv --output predictions.csv
-```
+## Repository guide
 
-输出格式：CSV文件，包含 `text` 和 `prediction` 两列
+| File or directory | Purpose |
+|---|---|
+| `CS461_Sarcasm_Detection_Report.md` | Model design, training procedure, results, and limitations |
+| `SarcasmDetection.ipynb` | Main development notebook and stored experiment outputs |
+| `predict_sarcasm.py` | Saved-model loading, preprocessing, and CSV predictions |
+| `models/` | Neural weights, tokenizers, stacker, and configuration |
+| `train.csv`, `valid.csv`, `test.csv` | Supplied course data splits |
+| `predictions.csv` | Predictions matching the verified saved-model run |
+| `docs/verification-2026-10-04.json` | Saved-model verification evidence |
+| `SarcasmDetection(abandon).ipynb`, `test_predictions.csv` | Earlier development artifacts |
+| `cs_461_final_project.pdf` | Original course assignment specification |
 
----
-
-## 📊 报告要求（9个章节）
-
-1. **Introduction** - 问题描述、方法概述
-2. **Data Exploration & Preprocessing** - 数据统计、预处理步骤
-3. **Feature Engineering** - TF-IDF、词嵌入等
-4. **Model Architecture & Selection** - 模型选择理由
-5. **Training Methodology** - 训练过程、优化方法
-6. **Experiments & Results** - ⚠️ 必须报告测试集的 F1/Precision/Recall/Accuracy
-7. **Discussion** - 有效方法、局限性
-8. **Conclusion** - 总结
-9. **References** - 引用资源
-
----
-
-## 💡 提示
-
-- 从简单开始：逻辑回归 + TF-IDF是很好的基线
-- 尝试不同特征：unigram, bigram, Word2Vec
-- 考虑集成多个模型
-- 注意防止过拟合（使用验证集、正则化）
-- 所有路径使用相对路径
-
----
-
-**评分**：报告15% + 公开测试5% + 隐藏测试10% = 30%
+This is an academic NLP project. Evaluation describes the supplied course data; data-quality observations and directions for stronger validation are documented in the report. The original notebook retains the course-era team credits.

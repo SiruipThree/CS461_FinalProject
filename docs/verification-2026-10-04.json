@@ -1,0 +1,70 @@
+{
+  "project": "Sarcasm Detection in News Headlines",
+  "verified_on": "2026-10-04",
+  "timezone": "America/Chicago",
+  "verification_type": "saved-model inference and recomputed classification metrics",
+  "source_checkpoint_commit": "93301d83d79f20152d155679c0af275880d72d57",
+  "inference_command": "python predict_sarcasm.py --input test.csv --output /tmp/sarcasm_predictions.csv",
+  "inference_exit_code": 0,
+  "retrained_models": false,
+  "runtime": {
+    "python": "3.11.9",
+    "tensorflow": "2.20.0",
+    "keras": "3.12.0",
+    "scikit-learn": "1.8.0",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "h5py": "3.15.1",
+    "joblib": "1.5.2"
+  },
+  "test_rows": 966,
+  "positive_class": 1,
+  "metrics": {
+    "accuracy": 0.8799171842650103,
+    "precision": 0.8417721518987342,
+    "recall": 0.9068181818181819,
+    "f1": 0.8730853391684902
+  },
+  "confusion_matrix": {
+    "label_order": [
+      0,
+      1
+    ],
+    "rows_actual_columns_predicted": [
+      [
+        451,
+        75
+      ],
+      [
+        41,
+        399
+      ]
+    ]
+  },
+  "matches_repository_predictions_by_row": true,
+  "generated_predictions_sha256": "a0fd55fcd294592c25e6baf9411e8cdf45e85b9683d42d9b5eb6b37dff392808",
+  "artifact_sha256": {
+    "predict_sarcasm.py": "e78e0436d56bf9febc73c8b473e16bc1c8dcce43bfec298f6aefdfb9fec96db0",
+    "test.csv": "241ac25ac478a7689892c7c54cc1bd352fd49fad78bbf4f9a25a9dc3ff809604",
+    "predictions.csv": "a0fd55fcd294592c25e6baf9411e8cdf45e85b9683d42d9b5eb6b37dff392808",
+    "models/charcnn_model.h5": "82caad11d3485871570484fd013759eb43852ea2b8456b1aa32ef96b75dcf7e0",
+    "models/char_tokenizer.pkl": "bdb6c911286a9c6c12c9bd90d8db76e82d8688467bce96effb40af83254e5811",
+    "models/final_glove_bilstm.h5": "2416ae34d7879ba8eac5186bb0712e06fcd4adaefb86204154015b03cdcbe7a2",
+    "models/tokenizer.pkl": "ab150203ea1ab9969a061234d27172aec21105add3218f447ed12b58fbf860df",
+    "models/meta_learner.pkl": "efd073e569c45286f2f1dff14d545865d7745c8a36570fd5fe1a216d1cc8b49b",
+    "models/stacking_config.pkl": "7486b61a6c263f4148385e21bc6afb102be223ad419f6eed7a181ec3e7b79dfa"
+  },
+  "data_quality": {
+    "duplicate_text_rows": {
+      "train": 74,
+      "valid": 0,
+      "test": 1
+    },
+    "distinct_text_overlap": {
+      "train_valid": 3,
+      "train_test": 5,
+      "valid_test": 0
+    },
+    "splits_used_as_supplied": true
+  }
+}

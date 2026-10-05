@@ -31,3 +31,5 @@ ENV/
 # 其他
 *.log
 
+# Local verification environment
+/.venv/
